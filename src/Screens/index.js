@@ -1,3 +1,5 @@
-import { WetherScreen as WS } from './wether';
+import { WeatherScreen as WS } from './wether';
+import { NoNetScreen as NN } from './noNet';
 
-export const WetherScreen = WS;
+export const WeatherScreen = WS;
+export const NoNetScreen = NN;

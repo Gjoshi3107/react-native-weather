@@ -8,7 +8,7 @@ import { Daily } from '../Component/daily';
 import { Today } from '../Component/today';
 
 
-export function WetherScreen() {
+export function WeatherScreen() {
   return (
     <>
       <SafeAreaView>
@@ -23,4 +23,4 @@ export function WetherScreen() {
   );
 };
 
-export default WetherScreen;
+export default WeatherScreen;

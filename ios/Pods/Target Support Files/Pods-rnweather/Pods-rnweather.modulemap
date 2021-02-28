@@ -1,0 +1,6 @@
+module Pods_rnweather {
+  umbrella header "Pods-rnweather-umbrella.h"
+
+  export *
+  module * { export * }
+}

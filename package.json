@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "^6.0.0",
+    "apisauce": "^2.0.1",
+    "lottie-react-native": "^3.5.0",
     "react": "16.13.1",
     "react-native": "0.63.4"
   },
