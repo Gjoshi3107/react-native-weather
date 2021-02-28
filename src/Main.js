@@ -9,20 +9,27 @@ import { WeatherScreen, NoNetScreen } from './Screens';
 
 import { Loader } from './Component/loader';
 import { useNetInfo } from "@react-native-community/netinfo";
-
-import LottieView from 'lottie-react-native';
 import { getAPIData } from './API'
+import { requestLocationPermission } from './Permission/location';
+import Geolocation from '@react-native-community/geolocation';
+
 
 function App() {
 
   const netinfo = useNetInfo();
   const [network, setNetwork] = useState(false);
-  const [checkNetwork, getNetwork] = useState(true);
+  const [hasApiError, getApiError] = useState(false);
   const [runLoader, useLoader] = useState(false);
 
-  console.log("netinfo.isConnected", netinfo.isConnected);
   useEffect(() => {
+    console.log("netinfo.isConnected", netinfo.isConnected);
     setNetwork(netinfo.isConnected);
+    requestLocationPermission()
+    checkNet()
+  })
+
+  function checkNet() {
+    console.log("netinfo.isConnected 0 ", netinfo.isConnected);
     if (!netinfo.isConnected) {
       console.log("netinfo.isConnected 1 ", netinfo.isConnected);
       useLoader(false)
@@ -30,24 +37,31 @@ function App() {
     else {
       console.log("netinfo.isConnected 2 ", netinfo.isConnected);
       useLoader(true);
-      const response = getAPIData(29.235294, 79.547332);
-      console.log(response.ok);
-      if (!response.ok) {
-        useLoader(false);
-        setNetwork(false);
-      }
     }
-  })
+  }
+
+  function myData() {
+    Geolocation.getCurrentPosition(async (info) => {
+      console.log("Geolocation\n", info)
+      const response = await getAPIData(info.coords.latitude, info.coords.longitude);
+      console.log("useeffect response:-\n", response.ok);
+      if (!response.ok) {
+        getApiError(true);
+      }
+    });
+  }
+  useEffect(() => {
+    myData()
+  }, []);
 
   return (
     <>
       <StatusBar barStyle="light-content" />
-      {(network) ?
+      {(network && !hasApiError) ?
         (runLoader) ?
-          // <LottieView source={require('./Assets/loader/226-splashy-loader.json')} autoPlay loop />
           <Loader />
-          : <SafeAreaView> <WeatherScreen /></SafeAreaView>
-        : <SafeAreaView><NoNetScreen getNetwork={getNetwork} /></SafeAreaView>
+          : <SafeAreaView><WeatherScreen /></SafeAreaView>
+        : <SafeAreaView><NoNetScreen myData={myData} /></SafeAreaView>
       }
     </>
   );

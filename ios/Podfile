@@ -10,6 +10,8 @@ target 'rnweather' do
 
   pod 'lottie-react-native', :path => '../node_modules/lottie-react-native'
 
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'rnweatherTests' do
     inherit! :complete
     # Pods for testing

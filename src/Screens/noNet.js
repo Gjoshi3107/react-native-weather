@@ -13,7 +13,7 @@ export function NoNetScreen(props) {
 
   function retry() {
     console.log("here");
-    props.getNetwork(true);
+    props.myData();
   }
 
   return (
