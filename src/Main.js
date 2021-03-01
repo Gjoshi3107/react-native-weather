@@ -3,15 +3,14 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StatusBar,
+  LogBox
 } from 'react-native';
 
 import { WeatherScreen, NoNetScreen } from './Screens';
 
 import { Loader } from './Component/loader';
 import { useNetInfo } from "@react-native-community/netinfo";
-import { getAPIData } from './API'
-import { requestLocationPermission } from './Permission/location';
-import Geolocation from '@react-native-community/geolocation';
+import { requestLocationPermission, checkNet, myData } from './Functions';
 
 
 function App() {
@@ -20,15 +19,14 @@ function App() {
   const [network, setNetwork] = useState(false);
   const [hasApiError, getApiError] = useState(false);
   const [runLoader, useLoader] = useState(false);
+  const [temp, setTemp] = useState([]);
+  const [day, setDay] = useState([]);
+  const [city, setCity] = useState("");
 
   useEffect(() => {
     console.log("netinfo.isConnected", netinfo.isConnected);
     setNetwork(netinfo.isConnected);
-    requestLocationPermission()
-    checkNet()
-  })
-
-  function checkNet() {
+    requestLocationPermission();
     console.log("netinfo.isConnected 0 ", netinfo.isConnected);
     if (!netinfo.isConnected) {
       console.log("netinfo.isConnected 1 ", netinfo.isConnected);
@@ -37,22 +35,17 @@ function App() {
     else {
       console.log("netinfo.isConnected 2 ", netinfo.isConnected);
       useLoader(true);
+      myData(getApiError, setCity, setTemp, setDay, useLoader);
     }
+  }, [netinfo])
+
+  function callMyData() {
+    myData(getApiError, setCity, setTemp, setDay, useLoader);
   }
 
-  function myData() {
-    Geolocation.getCurrentPosition(async (info) => {
-      console.log("Geolocation\n", info)
-      const response = await getAPIData(info.coords.latitude, info.coords.longitude);
-      console.log("useeffect response:-\n", response.ok);
-      if (!response.ok) {
-        getApiError(true);
-      }
-    });
-  }
   useEffect(() => {
-    myData()
-  }, []);
+    console.log('Loader:-', runLoader);
+  }, [runLoader]);
 
   return (
     <>
@@ -60,8 +53,10 @@ function App() {
       {(network && !hasApiError) ?
         (runLoader) ?
           <Loader />
-          : <SafeAreaView><WeatherScreen /></SafeAreaView>
-        : <SafeAreaView><NoNetScreen myData={myData} /></SafeAreaView>
+          : <SafeAreaView>
+            <WeatherScreen temp={temp} city={city} day={day} />
+          </SafeAreaView>
+        : <SafeAreaView><NoNetScreen myData={callMyData} /></SafeAreaView>
       }
     </>
   );

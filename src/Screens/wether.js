@@ -4,20 +4,16 @@ import {
   Text,
 } from 'react-native';
 
-import { Daily } from '../Component/daily';
+import { DailyList } from '../Component/dailylist';
 import { Today } from '../Component/today';
 
 
-export function WeatherScreen() {
+export function WeatherScreen(props) {
   return (
     <>
       <SafeAreaView>
-        <Today temp="23" location='Delhi' />
-        <Daily day="Mon" temp="23" />
-        <Daily day="Mon" temp="23" />
-        <Daily day="Mon" temp="23" />
-        <Daily day="Mon" temp="23" />
-        <Daily day="Mon" temp="23" />
+        <Today temp={props.temp[0]} location={props.city} />
+        <DailyList {...props} />
       </SafeAreaView>
     </>
   );

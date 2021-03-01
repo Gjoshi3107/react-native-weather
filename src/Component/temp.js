@@ -4,6 +4,6 @@ import React from 'react';
 
 export function Temp(props) {
   return (
-    <Text style={props.style}>{props.temp}°</Text>
+    <Text style={props.style}>{props.temp}°C</Text>
   )
 }
