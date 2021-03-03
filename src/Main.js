@@ -2,16 +2,19 @@
 import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
-  StatusBar,
-  LogBox
+  StatusBar
 } from 'react-native';
 
 import { WeatherScreen, NoNetScreen } from './Screens';
 
 import { Loader } from './Component/loader';
 import { useNetInfo } from "@react-native-community/netinfo";
-import { requestLocationPermission, checkNet, myData } from './Functions';
+import { requestLocationPermission, myData } from './Functions';
 
+
+import { connect } from 'react-redux';
+import { STORE_FORECAST } from './redux/action'
+import { getStateFromStore } from './index';
 
 function App() {
 
@@ -62,4 +65,16 @@ function App() {
   );
 };
 
-export default App;
+
+const mapStateToProps = state => {
+  return { data: state };
+};
+
+
+function mapDispatchToProps(dispatch) {
+  return {
+    SF: (article) => { dispatch(STORE_FORECAST(article)) },
+  };
+}
+const Connect = connect(mapStateToProps, mapDispatchToProps)(App);
+export default Connect;
