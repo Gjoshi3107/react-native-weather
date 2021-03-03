@@ -1,4 +1,4 @@
-# React-Native-weather
+# React-Native-Weather
 This is a simple project that uses https://openweathermap.org to get the current and forecast for next 5 days.<br>
 Your current location through GPS with the help of `react-native-geolocation-service` library
 
