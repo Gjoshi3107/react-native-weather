@@ -13,7 +13,7 @@ import { requestLocationPermission, myData } from './Functions';
 
 
 import { connect } from 'react-redux';
-import { STORE_FORECAST } from './redux/action'
+import { STORE_FORECAST } from './store/action'
 import { getStateFromStore } from './index';
 
 function App() {
