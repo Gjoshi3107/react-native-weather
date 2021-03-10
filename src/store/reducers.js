@@ -1,24 +1,29 @@
-import { ADD_FORECAST, API_CALL, API_CALL_FAIL, API_CALL_SUCCESS } from './component(action type)';
-// import console from 'console';
-
-// const initState1 = {
-//     cityName: {
-//         forecastArray
-//     },
-//     cities: []
-// };
+import {
+    LOADER,
+    API_CALL_SUCCESS,
+    API_CALL_FAIL,
+    GET_LOCATION_SUCCESS,
+    GET_LOCATION_FAILED,
+    NET
+} from './component(action type)';
 
 const initState1 = {
-    loading: false,
+    loading: true,
     network: true,
+    hasApiError: false,
     geoLocation: [],
-    forecast: {}
+    forecast: {
+        City: null,
+        Temp: null,
+        Day: null,
+        TimeStamp: null,
+    }
 };
 
 export default function myData(state = initState1, action) {
     switch (action.type) {
         case API_CALL_SUCCESS: {
-            let [Cityy, temperature, Daye, timeStampe, Late, Longe] = action.payload.data;
+            let [Cityy, temperature, Daye, timeStampe] = action.payload.data;
 
             return {
                 ...state,
@@ -26,35 +31,44 @@ export default function myData(state = initState1, action) {
                     City: Cityy,
                     Temp: temperature,
                     Day: Daye,
-                    TimeStamp: timeStampe,
-                    Lat: Late,
-                    Long: Longe
+                    TimeStamp: timeStampe
                 },
                 loading: false
             };
         }
-        case API_CALL: {
-            return {
-                ...state,
-                loading: true,
-            }
-        }
         case API_CALL_FAIL: {
+            console.log("API CALL FAILED:_\n", action.payload);
             return {
                 ...state,
-                loading: false,
+                hasApiError: true,
+                loading: false
             }
         }
-        case NO_NET: {
+        case LOADER: {
+            console.log("LOADER payload:-", action.payload);
             return {
                 ...state,
-                network: false,
+                loading: action.payload.data
             }
         }
-        case HAS_NET: {
+        case NET: {
             return {
                 ...state,
-                network: true,
+                network: action.payload.data
+            }
+        }
+        case GET_LOCATION_SUCCESS: {
+            console.log("GET_LOCATION_SUCCESS payload:-", action.payload);
+            return {
+                ...state,
+                geoLocation: [action.payload.data[0], action.payload.data[1]]
+            }
+        }
+        case GET_LOCATION_FAILED: {
+            return {
+                ...state,
+                geoLocation: [],
+                loading: false
             }
         }
         default:

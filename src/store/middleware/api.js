@@ -1,6 +1,6 @@
 import { create } from 'apisauce'
-import { CALL_API, FAIL_API_CALL, SUCCESS_API_CALL } from '../action';
-
+import { FAIL_API_CALL, SUCCESS_API_CALL } from '../action';
+import { CALL_API } from '../component(action type)';
 
 const APIKEY = "582693e63b3788fe06edb0f47229f759";
 
@@ -18,36 +18,41 @@ function tsToDay(timestamp) {
   return dayArray[date.getDay()];
 }
 
-const api = ({ dispach, getstore }) => next => action => {
-  if (action.type !== API_CALL)
+const apiData = ({ dispatch, getState }) => next => async action => {
+  if (action.type !== CALL_API)
     return next(action)
 
   try {
-    dispach(CALL_API())
+    console.log("state:-\n", getState());
+    var state = getState();
     const responseF = await api
-      .get(`/data/2.5/onecall?lat=${action.payload.lat}&lon=${action.payload.long}&exclude=hourly,minutely&appid=${APIKEY}&units=metric`)
+      .get(`/data/2.5/onecall?lat=${state.geoLocation[0]}&lon=${state.geoLocation[1]}&exclude=hourly,minutely&appid=${APIKEY}&units=metric`)
 
     const responseW = await api
-      .get(`/data/2.5/weather?lat=${action.payload.lat}&lon=${action.payload.long}&appid=${APIKEY}&units=metric`)
+      .get(`/data/2.5/weather?lat=${state.geoLocation[0]}&lon=${state.geoLocation[1]}&appid=${APIKEY}&units=metric`)
 
+    console.log("responseF:-", responseF);
+    console.log("responseW:-", responseW);
     let tempC = [];
     let nextDay = [];
-    let timestamp = null;
-    tempC.push(responseF.data.current.temp);
+    let timestamp = responseF.data.current.dt;
+    // tempC.push(responseF.data.current.temp);
 
     responseF.data.daily.forEach((element) => {
       tempC.push(element.temp.day);
       nextDay.push(tsToDay(element.dt));
     })
-
-    let data = [responseW.data.name, tempC, nextDay, timestamp, action.payload.lat, action.payload.long];
-    dispach(SUCCESS_API_CALL(data))
+    console.log("tempC:-\n", tempC);
+    console.log("nextDay:-\n", nextDay);
+    let data = [responseW.data.name, tempC, nextDay, timestamp];
+    dispatch(SUCCESS_API_CALL(data));
   }
   catch (err) {
-    dispach(FAIL_API_CALL(err.data.message))
+    console.log("API ERR:-\n", err);
+    dispatch(FAIL_API_CALL(err.data.message))
   }
 
 }
 
 
-export default api;
+export default apiData;

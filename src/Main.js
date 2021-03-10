@@ -9,55 +9,51 @@ import { WeatherScreen, NoNetScreen } from './Screens';
 
 import { Loader } from './Component/loader';
 import { useNetInfo } from "@react-native-community/netinfo";
-import { requestLocationPermission, myData } from './Functions';
+import { requestLocationPermission } from './Functions';
 
 
-import { connect } from 'react-redux';
-import { STORE_FORECAST } from './store/action'
-import { getStateFromStore } from './index';
+import { NETWORK, GEO_LOCATION, GET_LOADER } from './store/action'
+import store from './store/configureStore';
 
 function App() {
-
   const netinfo = useNetInfo();
-  const [network, setNetwork] = useState(false);
-  const [hasApiError, getApiError] = useState(false);
-  const [runLoader, useLoader] = useState(false);
-  const [temp, setTemp] = useState([]);
-  const [day, setDay] = useState([]);
-  const [city, setCity] = useState("");
+  const [state, setState] = useState({});
+  console.log("netinfo:-\n", netinfo);
 
+  const unsubscribe = store.subscribe(() => {
+    setState(store.getState());
+    console.log("store changed:-", state);
+  });
   useEffect(() => {
-    console.log("netinfo.isConnected", netinfo.isConnected);
-    setNetwork(netinfo.isConnected);
     requestLocationPermission();
-    console.log("netinfo.isConnected 0 ", netinfo.isConnected);
-    if (!netinfo.isConnected) {
-      console.log("netinfo.isConnected 1 ", netinfo.isConnected);
-      useLoader(false)
+    if (netinfo.isConnected == false) {
+      store.dispatch(NETWORK(netinfo.isConnected))
+      store.dispatch(GET_LOADER(false))
     }
-    else {
-      console.log("netinfo.isConnected 2 ", netinfo.isConnected);
-      useLoader(true);
-      myData(getApiError, setCity, setTemp, setDay, useLoader);
+    else if (netinfo.isConnected) {
+      store.dispatch(NETWORK(netinfo.isConnected))
+      store.dispatch(GET_LOADER(true))
+      store.dispatch(GEO_LOCATION())
     }
   }, [netinfo])
 
+  // useEffect(() => {
+  //   console.log("loader state:-", state.loading);
+  // }, [state])
+
   function callMyData() {
-    myData(getApiError, setCity, setTemp, setDay, useLoader);
+    // myData(getApiError, setCity, setTemp, setDay, useLoader);
   }
 
-  useEffect(() => {
-    console.log('Loader:-', runLoader);
-  }, [runLoader]);
-
+  console.log("state:-\n", state);
   return (
     <>
       <StatusBar barStyle="light-content" />
-      {(network && !hasApiError) ?
-        (runLoader) ?
+      {(state.network) ?
+        (state.loading) ?
           <Loader />
           : <SafeAreaView>
-            <WeatherScreen temp={temp} city={city} day={day} />
+            <WeatherScreen temp={state.forecast.Temp} city={state.forecast.City} day={state.forecast.Day} />
           </SafeAreaView>
         : <SafeAreaView><NoNetScreen myData={callMyData} /></SafeAreaView>
       }
@@ -66,15 +62,4 @@ function App() {
 };
 
 
-const mapStateToProps = state => {
-  return { data: state };
-};
-
-
-function mapDispatchToProps(dispatch) {
-  return {
-    SF: (article) => { dispatch(STORE_FORECAST(article)) },
-  };
-}
-const Connect = connect(mapStateToProps, mapDispatchToProps)(App);
-export default Connect;
+export default App;

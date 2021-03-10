@@ -1,20 +1,54 @@
-import { ADD_FORECAST, API_CALL, API_CALL_FAIL, API_CALL_SUCCESS, NO_NET } from './component(action type)';
+import {
+    LOADER,
+    CALL_API,
+    API_CALL_SUCCESS,
+    API_CALL_FAIL,
+    NET,
+    GET_LOCATION,
+    GET_LOCATION_SUCCESS,
+    GET_LOCATION_FAILED
+} from './component(action type)';
 
-export const STORE_FORECAST = data => ({
-    type: ADD_FORECAST,
+export const GEO_LOCATION = data => ({
+    type: GET_LOCATION,
+    payload: {
+        data
+    }
+})
+
+export const SAVE_LOCATION = data => ({
+    type: GET_LOCATION_SUCCESS,
+    payload: {
+        data
+    }
+})
+
+export const FAIL_GEO_LOCATION = data => ({
+    type: GET_LOCATION_FAILED,
+    payload: {
+        data
+    }
+})
+
+export const GET_LOADER = data => ({
+    type: LOADER,
     payload: {
         data
     }
 });
 
-
-export const CALL_API = data => ({
-    type: API_CALL,
+export const API_CALL = data => ({
+    type: CALL_API,
     payload: {
         data
     }
 });
-
+export const SUCCESS_API_CALL = data => ({
+    type: API_CALL_SUCCESS,
+    payload: {
+        data
+    }
+});
 export const FAIL_API_CALL = data => ({
     type: API_CALL_FAIL,
     payload: {
@@ -22,14 +56,8 @@ export const FAIL_API_CALL = data => ({
     }
 });
 
-export const SUCCESS_API_CALL = data => ({
-    type: API_CALL_SUCCESS,
-    payload: {
-        data
-    }
-});
-export const NO_NETWORK = data => ({
-    type: NO_NET,
+export const NETWORK = data => ({
+    type: NET,
     payload: {
         data
     }
