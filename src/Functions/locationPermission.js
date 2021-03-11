@@ -3,7 +3,7 @@ import {
 } from 'react-native';
 
 
-export async function requestLocationPermission() {
+export default async function requestLocationPermission() {
   try {
     var permission = await PermissionsAndroid.check(
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -15,7 +15,7 @@ export async function requestLocationPermission() {
       }
     );
     console.log("LOCATION permission granted:- ", permission);
-
+    var hasGranted;
     if (!permission) {
       var granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -28,13 +28,18 @@ export async function requestLocationPermission() {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('LOCATION permissions granted');
+        hasGranted = true;
       } else {
         console.log('LOCATION permission denied');
+        hasGranted = false;
       }
     }
-    // return granted;
+    else {
+      hasGranted = true;
+    }
+    return hasGranted;
   } catch (err) {
     console.warn(err);
-    // return false;
+    return false;
   }
 }

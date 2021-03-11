@@ -33,7 +33,8 @@ export default function myData(state = initState1, action) {
                     Day: Daye,
                     TimeStamp: timeStampe
                 },
-                loading: false
+                loading: false,
+                hasApiError: false
             };
         }
         case API_CALL_FAIL: {
@@ -68,7 +69,8 @@ export default function myData(state = initState1, action) {
             return {
                 ...state,
                 geoLocation: [],
-                loading: false
+                loading: false,
+                hasApiError: true
             }
         }
         default:
