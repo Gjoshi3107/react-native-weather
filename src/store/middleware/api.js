@@ -14,7 +14,6 @@ function tsToDay(timestamp) {
   var d = new Date(0);
   let x = d.setUTCSeconds(timestamp);
   let date = new Date(x);
-  console.log("date:- ", date);
   return dayArray[date.getDay()];
 }
 
@@ -23,7 +22,6 @@ const apiData = ({ dispatch, getState }) => next => async action => {
     return next(action)
 
   try {
-    console.log("state:-\n", getState());
     var state = getState();
     const responseF = await api
       .get(`/data/2.5/onecall?lat=${state.geoLocation[0]}&lon=${state.geoLocation[1]}&exclude=hourly,minutely&appid=${APIKEY}&units=metric`)
@@ -42,13 +40,10 @@ const apiData = ({ dispatch, getState }) => next => async action => {
       tempC.push(element.temp.day);
       nextDay.push(tsToDay(element.dt));
     })
-    console.log("tempC:-\n", tempC);
-    console.log("nextDay:-\n", nextDay);
     let data = [responseW.data.name, tempC, nextDay, timestamp];
     dispatch(SUCCESS_API_CALL(data));
   }
   catch (err) {
-    console.log("API ERR:-\n", err);
     dispatch(FAIL_API_CALL(err.data.message))
   }
 

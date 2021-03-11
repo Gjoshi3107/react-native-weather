@@ -38,7 +38,6 @@ export default function myData(state = initState1, action) {
             };
         }
         case API_CALL_FAIL: {
-            console.log("API CALL FAILED:_\n", action.payload);
             return {
                 ...state,
                 hasApiError: true,
@@ -46,7 +45,6 @@ export default function myData(state = initState1, action) {
             }
         }
         case LOADER: {
-            console.log("LOADER payload:-", action.payload);
             return {
                 ...state,
                 loading: action.payload.data
@@ -59,7 +57,6 @@ export default function myData(state = initState1, action) {
             }
         }
         case GET_LOCATION_SUCCESS: {
-            console.log("GET_LOCATION_SUCCESS payload:-", action.payload);
             return {
                 ...state,
                 geoLocation: [action.payload.data[0], action.payload.data[1]]

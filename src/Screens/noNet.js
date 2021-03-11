@@ -12,7 +12,6 @@ import {
 export function NoNetScreen(props) {
 
   function retry() {
-    console.log("here");
     props.myData();
   }
 

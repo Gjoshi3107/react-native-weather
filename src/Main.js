@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   StatusBar
@@ -19,7 +19,6 @@ function App() {
   const netinfo = useNetInfo();
   const dispatch = useDispatch();
   const state = useSelector(state => state);
-  console.log("netinfo:-\n", netinfo);
 
   useEffect(() => {
     callMyData2();
@@ -28,20 +27,17 @@ function App() {
   async function callMyData2() {
     const into = await requestLocationPermission();
     if (netinfo.isConnected == false || !into) {
-      console.log("into:-\n", into);
       dispatch(NETWORK(netinfo.isConnected))
       dispatch(FAIL_GEO_LOCATION())
       dispatch(GET_LOADER(false))
     }
     else if (netinfo.isConnected && into) {
-      console.log("into:-2\n", into);
       dispatch(NETWORK(netinfo.isConnected))
       dispatch(GET_LOADER(true))
       dispatch(GEO_LOCATION())
     }
   }
 
-  console.log("state:-\n", state);
   return (
     <>
       <StatusBar barStyle="light-content" />
